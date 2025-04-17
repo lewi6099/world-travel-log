@@ -6,8 +6,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (method === 'GET') {
-            const trips = await dbSelect('SELECT * FROM trips');
-            res.status(200).json(trips);
+            const { id } = query;
+
+            if (id) {
+                // Fetch a specific trip by ID
+                const trip = await dbSelect('SELECT * FROM trips WHERE id = ?', [id]);
+                if (trip.length === 0) {
+                    res.status(404).json({ message: 'Trip not found' });
+                } else {
+                    res.status(200).json(trip[0]); // Return the single trip
+                }
+            } else {
+                // Fetch all trips
+                const trips = await dbSelect('SELECT * FROM trips');
+                res.status(200).json(trips);
+            }
         } else if (method === 'PUT') {
             const { name, start_date, end_date, notes } = body;
             await dbRun(

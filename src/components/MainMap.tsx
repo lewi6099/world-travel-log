@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
-interface Destination {
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-}
+import { Destination } from '../types/DatabaseTypes';
 
 const MainMap: React.FC = () => {
   const [destinations, setDestinations] = useState<Destination[]>([]);
