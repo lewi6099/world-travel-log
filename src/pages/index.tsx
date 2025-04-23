@@ -7,9 +7,11 @@ const MapComponent = dynamic(() => import("../components/MainMap"), {
   ssr: false,
 });
 import { Trip } from "../types/DatabaseTypes";
+import NewTripModal from "@/components/NewTripModal";
 
 export default function Home() {
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [newTripModalVisible, setNewTripModalVisible] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -33,17 +35,34 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center space-y-8 p-4">
       {/* Map Section */}
+      
       <div className="w-full max-w-4xl h-96 rounded-lg shadow-lg overflow-hidden border border-gray-300">
-        <MapComponent />
+        {!newTripModalVisible && (
+            <MapComponent />
+        )}
       </div>
 
       {/* Table Section */}
       <div className="w-full max-w-4xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Trips</h2>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-            New Trip
-          </button>
+          <div className="flex space-x-4">
+            {/* New Trip Button */}
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              onClick={() => setNewTripModalVisible(true)}
+            >
+              New Trip
+            </button>
+
+            {/* New Activity Category Button */}
+            <button
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              onClick={() => alert("New Activity Category button clicked!")}
+            >
+              New Activity Category
+            </button>
+          </div>
         </div>
         <table className="w-full border-collapse border border-gray-300">
           <thead>
@@ -70,6 +89,7 @@ export default function Home() {
           </tbody>
         </table>
       </div>
+      <NewTripModal visible={newTripModalVisible} setVisible={setNewTripModalVisible} />
     </div>
   );
 }

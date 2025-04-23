@@ -21,12 +21,12 @@ const NewFeatureModal: React.FC<ModalProps> = ({ visible, setVisible, tripId, ac
   const [destination, setDestination] = useState<string>("");
   const [activityCategory, setActivityCategory] = useState<string>("");
 
-  // Reset state when modal is closed
+  // Reset state when modal is open/closed
   useEffect(() => {
     setSelectedOption(null);
   }, [visible]);
 
-  // Reset all inputs when selectedOption changes
+  // Reset all inputs when selectedOption changes or modal is opened/closed
   useEffect(() => {
     setName("");
     setStartDate("");

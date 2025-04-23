@@ -17,7 +17,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ids
         );
         res.status(200).json(activities);
-      } else {
+      } 
+      else if (destination_id == "") {
+        // Handle empty destination_id
+        res.status(400).json({ error: 'destination_id cannot be empty' });
+      }
+      else {
         // Fetch all activities
         const activities = await dbSelect('SELECT * FROM activities');
         res.status(200).json(activities);
