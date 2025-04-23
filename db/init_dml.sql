@@ -1,53 +1,3 @@
--- DDL for SQLite database
--- trips table
-CREATE TABLE IF NOT EXISTS trips (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    start_date TEXT,
-    end_date TEXT,
-    notes TEXT
-);
-
--- destinations table
-CREATE TABLE IF NOT EXISTS destinations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    trip_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    start_date TEXT,
-    end_date TEXT,
-    latitude REAL,
-    longitude REAL,
-    FOREIGN KEY (trip_id) REFERENCES trips(id)
-);
-
--- expenses table
-CREATE TABLE IF NOT EXISTS expenses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    destination_id INTEGER NOT NULL,
-    amount REAL NOT NULL,
-    description TEXT,
-    date TEXT,
-    FOREIGN KEY (destination_id) REFERENCES destinations(id)
-);
-
--- activity_categories table
-CREATE TABLE IF NOT EXISTS activity_categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL
-);
-
--- activities table (updated)
-CREATE TABLE IF NOT EXISTS activities (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    destination_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    description TEXT,
-    date TEXT,
-    category_id INTEGER,
-    FOREIGN KEY (destination_id) REFERENCES destinations(id),
-    FOREIGN KEY (category_id) REFERENCES activity_categories(id)
-);
-
 -- DML for sample data
 -- Insert activity categories (if not already in)
 INSERT OR IGNORE INTO activity_categories (name) VALUES
@@ -61,7 +11,13 @@ INSERT OR IGNORE INTO activity_categories (name) VALUES
 INSERT INTO trips (name, start_date, end_date, notes) VALUES
     ('Japan Adventure', '2023-04-01', '2023-04-14', 'Cherry blossom season!'),
     ('Euro Summer', '2022-07-05', '2022-08-01', 'Backpacking through Europe.'),
-    ('Desert Escape', '2024-11-10', '2024-11-20', 'Exploring the southwest.');
+    ('Desert Escape', '2024-11-10', '2024-11-20', 'Exploring the southwest.'),
+    ('Tropical Paradise', '2023-12-01', '2023-12-10', 'Relaxing on the beach.'),
+    ('Mountain Expedition', '2023-09-15', '2023-09-25', 'Hiking and camping in the Rockies.'),
+    ('City Lights', '2023-05-01', '2023-05-07', 'Exploring urban life.'),
+    ('Historical Tour', '2023-06-10', '2023-06-20', 'Visiting ancient landmarks.'),
+    ('Island Hopping', '2023-08-01', '2023-08-15', 'Exploring tropical islands.'),
+    ('Winter Wonderland', '2023-12-20', '2023-12-30', 'Skiing and snowboarding.');
 
 -- Insert Destinations (updated with latitude and longitude)
 INSERT INTO destinations (trip_id, name, start_date, end_date, latitude, longitude) VALUES
@@ -73,7 +29,18 @@ INSERT INTO destinations (trip_id, name, start_date, end_date, latitude, longitu
     (2, 'Berlin', '2022-07-16', '2022-07-20', 52.5200, 13.4050),
     (3, 'Sedona', '2024-11-10', '2024-11-14', 34.8697, -111.7609),
     (3, 'Grand Canyon', '2024-11-15', '2024-11-17', 36.1069, -112.1129),
-    (3, 'Las Vegas', '2024-11-18', '2024-11-20', 36.1699, -115.1398);
+    (3, 'Las Vegas', '2024-11-18', '2024-11-20', 36.1699, -115.1398),
+    (4, 'Maui', '2023-12-01', '2023-12-05', 20.7984, -156.3319),
+    (4, 'Honolulu', '2023-12-06', '2023-12-10', 21.3069, -157.8583),
+    (5, 'Denver', '2023-09-15', '2023-09-18', 39.7392, -104.9903),
+    (5, 'Rocky Mountain National Park', '2023-09-19', '2023-09-25', 40.3428, -105.6836),
+    (6, 'New York City', '2023-05-01', '2023-05-07', 40.7128, -74.0060),
+    (7, 'Rome', '2023-06-10', '2023-06-15', 41.9028, 12.4964),
+    (7, 'Athens', '2023-06-16', '2023-06-20', 37.9838, 23.7275),
+    (8, 'Bali', '2023-08-01', '2023-08-07', -8.3405, 115.0920),
+    (8, 'Maldives', '2023-08-08', '2023-08-15', 3.2028, 73.2207),
+    (9, 'Aspen', '2023-12-20', '2023-12-25', 39.1911, -106.8175),
+    (9, 'Vail', '2023-12-26', '2023-12-30', 39.6403, -106.3742);
 
 -- Insert Expenses
 INSERT INTO expenses (destination_id, amount, description, date) VALUES
@@ -82,7 +49,12 @@ INSERT INTO expenses (destination_id, amount, description, date) VALUES
     (4, 300.00, 'Airbnb in Paris', '2022-07-05'),
     (6, 120.00, 'Museum pass', '2022-07-18'),
     (7, 80.00, 'Hiking gear', '2024-11-11'),
-    (9, 200.00, 'Vegas hotel', '2024-11-18');
+    (9, 200.00, 'Vegas hotel', '2024-11-18'),
+    (10, 500.00, 'Beachfront resort', '2023-12-02'),
+    (12, 150.00, 'Ski rental', '2023-12-21'),
+    (15, 400.00, 'Broadway show tickets', '2023-05-03'),
+    (17, 250.00, 'Guided tour of the Colosseum', '2023-06-11'),
+    (19, 600.00, 'Overwater villa', '2023-08-09');
 
 -- Insert Activities
 INSERT INTO activities (destination_id, name, description, date, category_id) VALUES
@@ -94,4 +66,9 @@ INSERT INTO activities (destination_id, name, description, date, category_id) VA
     (6, 'Bar Crawl', 'Visited 3 local spots.', '2022-07-18', 2),
     (7, 'Cathedral Rock Hike', 'Sunset view was amazing.', '2024-11-11', 4),
     (9, 'Buffet Dinner', 'Endless seafood buffet.', '2024-11-18', 1),
-    (9, 'Casino Night', 'Won $50 on blackjack!', '2024-11-19', 2);
+    (9, 'Casino Night', 'Won $50 on blackjack!', '2024-11-19', 2),
+    (10, 'Snorkeling', 'Explored coral reefs.', '2023-12-03', 7),
+    (12, 'Skiing', 'Hit the slopes all day.', '2023-12-22', 7),
+    (15, 'Statue of Liberty', 'Took the ferry to Liberty Island.', '2023-05-02', 4),
+    (17, 'Vatican Museum', 'Saw the Sistine Chapel.', '2023-06-12', 4),
+    (19, 'Scuba Diving', 'Dived with manta rays.', '2023-08-10', 7);
