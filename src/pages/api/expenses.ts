@@ -6,8 +6,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (method === 'GET') {
-            const expenses = await dbSelect('SELECT * FROM expenses');
-            res.status(200).json(expenses);
+            const { destination_id } = query;
+
+            if (destination_id) {
+                // Handle multiple destination IDs
+                const ids = (destination_id as string).split(',').map((id) => parseInt(id.trim(), 10));
+                const placeholders = ids.map(() => '?').join(','); // Create placeholders for SQL query
+                const expenses = await dbSelect(
+                    `SELECT * FROM expenses WHERE destination_id IN (${placeholders})`,
+                    ids
+                );
+                res.status(200).json(expenses);
+            } else {
+                // Fetch all expenses
+                const expenses = await dbSelect('SELECT * FROM expenses');
+                res.status(200).json(expenses);
+            }
         } else if (method === 'PUT') {
             const { destination_id, amount, description, date } = body;
             await dbRun(

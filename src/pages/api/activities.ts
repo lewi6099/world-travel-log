@@ -2,28 +2,56 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { dbSelect, dbRun } from './db';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { method, body, query } = req;
+  const { method, body, query } = req;
 
-    try {
-        if (method === 'GET') {
-            const activities = await dbSelect('SELECT * FROM activities');
-            res.status(200).json(activities);
-        } else if (method === 'PUT') {
-            const { destination_id, name, description, date, latitude, longitude, category_id } = body;
-            await dbRun(
-                'INSERT INTO activities (destination_id, name, description, date, latitude, longitude, category_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [destination_id, name, description, date, latitude, longitude, category_id]
-            );
-            res.status(201).json({ message: 'Activity added successfully' });
-        } else if (method === 'DELETE') {
-            const { id } = query;
-            await dbRun('DELETE FROM activities WHERE id = ?', [id]);
-            res.status(200).json({ message: 'Activity deleted successfully' });
-        } else {
-            res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
-            res.status(405).end(`Method ${method} Not Allowed`);
-        }
-    } catch (error) {
-        res.status(500).json({ error: (error instanceof Error) ? error.message : 'An unknown error occurred' });
+  try {
+    if (method === 'GET') {
+      const { destination_id } = query;
+
+      if (destination_id) {
+        // Handle multiple destination IDs
+        const ids = (destination_id as string).split(',').map((id) => parseInt(id.trim(), 10));
+        const placeholders = ids.map(() => '?').join(','); // Create placeholders for SQL query
+        const activities = await dbSelect(
+          `SELECT * FROM activities WHERE destination_id IN (${placeholders})`,
+          ids
+        );
+        res.status(200).json(activities);
+      } else {
+        // Fetch all activities
+        const activities = await dbSelect('SELECT * FROM activities');
+        res.status(200).json(activities);
+      }
+    } else if (method === 'PUT') {
+      const { destination_id, name, description, date, category_id } = body;
+
+      if (!destination_id || !name) {
+        res.status(400).json({ error: 'destination_id and name are required' });
+        return;
+      }
+
+      await dbRun(
+        'INSERT INTO activities (destination_id, name, description, date, category_id) VALUES (?, ?, ?, ?, ?)',
+        [destination_id, name, description, date, category_id]
+      );
+      res.status(201).json({ message: 'Activity added successfully' });
+    } else if (method === 'DELETE') {
+      const { id } = query;
+
+      if (!id) {
+        res.status(400).json({ error: 'id is required' });
+        return;
+      }
+
+      await dbRun('DELETE FROM activities WHERE id = ?', [id]);
+      res.status(200).json({ message: 'Activity deleted successfully' });
+    } else {
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+      res.status(405).end(`Method ${method} Not Allowed`);
     }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: error instanceof Error ? error.message : 'An unknown error occurred' });
+  }
 }
