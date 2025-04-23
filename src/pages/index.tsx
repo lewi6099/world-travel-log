@@ -8,10 +8,12 @@ const MapComponent = dynamic(() => import("../components/MainMap"), {
 });
 import { Trip } from "../types/DatabaseTypes";
 import NewTripModal from "@/components/NewTripModal";
+import NewActivityCategoryModal from "@/components/NewActivityCategoryModal";
 
 export default function Home() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [newTripModalVisible, setNewTripModalVisible] = useState(false);
+  const [newActivityGroupModalVisible, setNewActivityGroupModalVisible] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,8 +39,8 @@ export default function Home() {
       {/* Map Section */}
       
       <div className="w-full max-w-4xl h-96 rounded-lg shadow-lg overflow-hidden border border-gray-300">
-        {!newTripModalVisible && (
-            <MapComponent />
+        {!newTripModalVisible && !newActivityGroupModalVisible && (
+          <MapComponent />
         )}
       </div>
 
@@ -49,7 +51,7 @@ export default function Home() {
           <div className="flex space-x-4">
             {/* New Trip Button */}
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
               onClick={() => setNewTripModalVisible(true)}
             >
               New Trip
@@ -57,8 +59,8 @@ export default function Home() {
 
             {/* New Activity Category Button */}
             <button
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-              onClick={() => alert("New Activity Category button clicked!")}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              onClick={() => setNewActivityGroupModalVisible(true)}
             >
               New Activity Category
             </button>
@@ -90,6 +92,8 @@ export default function Home() {
         </table>
       </div>
       <NewTripModal visible={newTripModalVisible} setVisible={setNewTripModalVisible} />
+      <NewActivityCategoryModal visible={newActivityGroupModalVisible} setVisible={setNewActivityGroupModalVisible} />
+
     </div>
   );
 }

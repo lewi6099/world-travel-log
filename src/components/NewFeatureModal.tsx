@@ -106,6 +106,7 @@ const NewFeatureModal: React.FC<ModalProps> = ({ visible, setVisible, tripId, ac
     }
     // Reset state after submission
     setVisible(false);
+    window.location.reload();
   };
 
   const verifyInputs = () => {

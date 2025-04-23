@@ -45,6 +45,7 @@ const NewTripModal: React.FC<ModalProps> = ({ visible, setVisible }) => {
 
       console.log("Trip added successfully");
       setVisible(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error submitting trip:", error);
     }
