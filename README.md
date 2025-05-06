@@ -30,7 +30,7 @@ In the root project directory, install the required packages:
 npm install
 ```
 
-### 2. Initalize the Database
+### 2. Initialize the Database
 
 In the terminal, run:
 
