@@ -8,7 +8,6 @@ This project was created as part of a **Database Design** course to explore prac
 
 The primary objective of this project was to apply database theory by defining entities, relationships, and constraints, and then implementing the schema in a real database environment. Beyond the backend, the project also included connecting the database to a frontend application. This demonstrated the full-stack workflow of sending and retrieving data through a user interface, and REST API endpoints.
 
----
 
 ## Features
 - Add and view trips and destinations
@@ -16,7 +15,6 @@ The primary objective of this project was to apply database theory by defining e
 - Sort expenses and activities by a destination within a trip
 - Store personal notes for each location
 
----
 
 ## Getting Started
 
